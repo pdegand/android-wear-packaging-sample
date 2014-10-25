@@ -29,6 +29,15 @@ android {
             signingConfig signingConfigs.production
         }
     }
+
+    productFlavors {
+        brandA {
+            applicationId "com.octo.app.a"
+        }
+        brandB {
+            applicationId "com.octo.app.b"
+        }
+    }
 }
 
 dependencies {
