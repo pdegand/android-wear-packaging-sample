@@ -3,7 +3,6 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 21
     buildToolsVersion "21.0.1"
-
     defaultConfig {
         applicationId "com.octo.app"
         minSdkVersion 18
@@ -11,10 +10,21 @@ android {
         versionCode 1
         versionName "1.0"
     }
+
+    signingConfigs {
+        production {
+            storeFile file('../keystore/production.jks')
+            storePassword 'testocto'
+            keyAlias 'com.octo Test'
+            keyPassword 'testocto'
+        }
+    }
+
     buildTypes {
         release {
             runProguard false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.production
         }
     }
 }
@@ -22,5 +32,5 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     wearApp project(':wear')
-    compile 'com.google.android.gms:play-services:+'
+    compile 'com.google.android.gms:play-services:6.1.11'
 }

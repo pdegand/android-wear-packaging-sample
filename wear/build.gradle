@@ -12,10 +12,21 @@ android {
         versionCode 1
         versionName "1.0"
     }
+
+    signingConfigs {
+        production {
+            storeFile file('../keystore/production.jks')
+            storePassword 'testocto'
+            keyAlias 'com.octo Test'
+            keyPassword 'testocto'
+        }
+    }
+
     buildTypes {
         release {
             runProguard false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.production
         }
     }
 }
