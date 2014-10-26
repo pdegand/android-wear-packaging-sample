@@ -49,14 +49,12 @@ dependencies {
 android.applicationVariants.all { variant ->
 
     if (variant.buildType.name == 'release') {
-        variant.productFlavors.each { flavor ->
-            variant.outputs.each { output ->
-                output.assemble << {
-                    println "Copying Wear wear-${flavor.name}-${variant.buildType.name}.apk"
-                    copy {
-                        from output.outputFile.path
-                        into "../mobile/src/main/assets"
-                    }
+        variant.outputs.each { output ->
+            output.assemble << {
+                println "Copying Wear APK inside mobile"
+                copy {
+                    from output.outputFile.path
+                    into "../mobile/src/main/assets"
                 }
             }
         }

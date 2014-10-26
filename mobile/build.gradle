@@ -50,14 +50,13 @@ dependencies {
 project.afterEvaluate {
     android.applicationVariants.all { variant ->
 
-        variant.productFlavors.each { flavor ->
+        if (variant.buildType.name == 'release') {
+            tasks["generate${variant.name.capitalize()}Assets"].dependsOn(":wear:assemble${variant.name.capitalize()}")
 
-            if (variant.buildType.name == 'release') {
-                tasks["prepare${variant.name.capitalize()}Dependencies"].dependsOn(":wear:assemble${variant.name.capitalize()}")
-
-                def apkFileName = "wear-${flavor.name}-${variant.buildType.name}.apk"
-                variant.mergeResources << { // Edit the Wear Description XML file
-                    File wearDescFile = file("${variant.outputs.get(0).processResources.resDir}/xml/wear_desc.xml")
+            variant.outputs.each { output ->
+                task("handle${variant.name.capitalize()}WearDesc") << { // Edit the Wear Description XML file
+                    def apkFileName = "wear-${variant.flavorName}-${variant.buildType.name}.apk"
+                    File wearDescFile = file("${output.processResources.resDir}/xml/wear_desc.xml")
                     String content = wearDescFile.getText('UTF-8')
                     content = content.replaceAll(/APPICATION_ID/, "${variant.mergedFlavor.applicationId}")
                     content = content.replaceAll(/VERSION_CODE/, "${variant.mergedFlavor.versionCode}")
@@ -65,12 +64,11 @@ project.afterEvaluate {
                     content = content.replaceAll(/WEAR_BUILD/, apkFileName)
                     wearDescFile.write(content, 'UTF-8')
                 }
+                output.processManifest.dependsOn("handle${variant.name.capitalize()}WearDesc")
 
-                variant.outputs.each { output ->
-                    output.assemble << { // Clean the assets folder of all apk
-                        ant.delete(includeEmptyDirs: 'true') {
-                            fileset(dir: file('./src/main/assets/'), includes: '*.apk')
-                        }
+                output.assemble << { // Clean the assets folder of all apk
+                    ant.delete(includeEmptyDirs: 'true') {
+                        fileset(dir: file('./src/main/assets/'), includes: '*.apk')
                     }
                 }
             }
