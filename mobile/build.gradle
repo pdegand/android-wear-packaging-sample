@@ -36,10 +36,11 @@ android {
             applicationId "com.octo.app.b"
         }
     }
+    sourceSets { brandA { assets.srcDirs = ['src/brandA/assets', 'src/brandA/assets/'] } }
 }
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    wearApp project(':wear')
+//    wearApp project(':wear')
     compile 'com.google.android.gms:play-services:6.1.71'
 }

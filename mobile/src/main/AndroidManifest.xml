@@ -16,6 +16,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!-- WEAR APP DESCRIPTION -->
+        <meta-data android:name="com.google.android.wearable.beta.app"
+                   android:resource="@xml/wear_desc"/>
     </application>
 
 </manifest>
