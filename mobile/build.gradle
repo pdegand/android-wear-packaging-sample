@@ -7,8 +7,8 @@ android {
         applicationId "com.octo.app"
         minSdkVersion 18
         targetSdkVersion 21
-        versionCode 1
-        versionName "1.0"
+        versionCode appVersionCode
+        versionName appVersionName
     }
 
     signingConfigs {
@@ -41,6 +41,39 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
+
+    // We don't need this anymore
 //    wearApp project(':wear')
     compile 'com.google.android.gms:play-services:6.1.71'
+}
+
+project.afterEvaluate {
+    android.applicationVariants.all { variant ->
+
+        variant.productFlavors.each { flavor ->
+
+            if (variant.buildType.name == 'release') {
+                tasks["prepare${variant.name.capitalize()}Dependencies"].dependsOn(":wear:assemble${variant.name.capitalize()}")
+
+                def apkFileName = "wear-${flavor.name}-${variant.buildType.name}.apk"
+                variant.mergeResources << { // Edit the Wear Description XML file
+                    File wearDescFile = file("${variant.outputs.get(0).processResources.resDir}/xml/wear_desc.xml")
+                    String content = wearDescFile.getText('UTF-8')
+                    content = content.replaceAll(/APPICATION_ID/, "${variant.mergedFlavor.applicationId}")
+                    content = content.replaceAll(/VERSION_CODE/, "${variant.mergedFlavor.versionCode}")
+                    content = content.replaceAll(/VERSION_NAME/, "${variant.mergedFlavor.versionName}")
+                    content = content.replaceAll(/WEAR_BUILD/, apkFileName)
+                    wearDescFile.write(content, 'UTF-8')
+                }
+
+                variant.outputs.each { output ->
+                    output.assemble << { // Clean the assets folder of all apk
+                        ant.delete(includeEmptyDirs: 'true') {
+                            fileset(dir: file('./src/main/assets/'), includes: '*.apk')
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
