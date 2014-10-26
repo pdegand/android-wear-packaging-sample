@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- This file is filled automatically at build time -->
+<wearableApp package="APPICATION_ID">
+    <versionCode>VERSION_CODE</versionCode>
+    <versionName>VERSION_NAME</versionName>
+    <path>WEAR_BUILD</path>
+</wearableApp>
