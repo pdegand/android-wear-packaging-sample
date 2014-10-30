@@ -3,7 +3,7 @@ Android Wear Packaging for Real World Applications
 
 This multi-flavored sample project provides an example of how to automatically package your Android Wear APK insidethe handled app.
 
-You can read more about this at *blog post coming soon*
+[Reade More (FR)](http://blog.octo.com/packager-une-application-android-wear-dans-la-vraie-vie/)
 
 License
 -------
