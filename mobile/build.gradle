@@ -1,3 +1,4 @@
+import groovy.xml.MarkupBuilder
 apply plugin: 'com.android.application'
 
 android {
@@ -36,7 +37,6 @@ android {
             applicationId "com.octo.app.b"
         }
     }
-    sourceSets { brandA { assets.srcDirs = ['src/brandA/assets', 'src/brandA/assets/'] } }
 }
 
 dependencies {
@@ -73,5 +73,26 @@ project.afterEvaluate {
                 }
             }
         }
+    }
+
+    task("lol") << {
+        project.rootProject.findProject(":wear").android.applicationVariants.all { variant ->
+            addWearableXmlDescriptionFile variant
+        }
+    }
+}
+
+def addWearableXmlDescriptionFile(variant) {
+    variant.outputs.each { output ->
+        def xmlWritter = new StringWriter()
+        def xml = new MarkupBuilder(xmlWritter)
+        xml.setDoubleQuotes true
+        xml.mkp.xmlDeclaration(version: "1.0", encoding: "utf-8")
+        xml.wearableApp(package: variant.mergedFlavor.applicationId) {
+            versionCode(variant.mergedFlavor.versionCode)
+            versionName(variant.mergedFlavor.versionName)
+            path(output.outputFile.name)
+        }
+        println xmlWritter
     }
 }
